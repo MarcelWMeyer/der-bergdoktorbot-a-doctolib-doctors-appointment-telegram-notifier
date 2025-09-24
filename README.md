@@ -1,4 +1,26 @@
-# Der BergdoktorBot – A Doctolib doctor's appointment Telegram notifier
+# Der BergdoktorBot – A Multi-Doctor Doctolib Appointment Telegram Notifier
+
+[![Docker Build](https://github.com/MarcelWMeyer/der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier/actions/workflows/ci.yml/badge.svg)](https://github.com/MarcelWMeyer/der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier/actions/workflows/ci.yml)
+[![Docker Hub](https://img.shields.io/docker/v/MarcelWMeyer/bergdoktorbot?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/MarcelWMeyer/bergdoktorbot)
+[![License](https://img.shields.io/github/license/MarcelWMeyer/der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier)](LICENSE.md)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+
+![Der BergdoktorBot banner](images/Der_Bergdoktor_banner_with_working_title_and_project_description.jpg)er BergdoktorBot FORK – A Multi-Doctor Doctolib Appointment Telegram Notifier
+
+![Der BergdoktorBot banner](images/Der_Bergdoktor_banner_with_working_title_and_project_description.jpg)
+
+Get Telegram notifications about doctor's appointments from **multiple doctors simultaneously** on [doctolib.de](https://www.doctolib.de/). This Docker-based bot monitors multiple doctors and sends **combined notifications** when appointments become available.
+
+## ✨ Features
+
+- 🏥 **Multi-Doctor Monitoring**: Monitor unlimited doctors simultaneously
+- 🐳 **Docker Ready**: Easy deployment with Docker Compose
+- 📱 **Smart Notifications**: Combined Telegram messages for all available appointments
+- ⚙️ **Flexible Configuration**: Environment variables for easy setup
+- 🔄 **Reliable Scheduling**: Loop-based execution (no cron issues)
+- 🔒 **Privacy Focused**: No login required, works with public availability data
+
+ℹ️ 🔒 🔧 Remember that this script does not know anything about your doctolib details behind your login so you have to **monitor** and **adjust** it on the go to reduce unwanted notifications.ergdoktorBot – A Doctolib doctor's appointment Telegram notifier
 
 ![Der BergdoktorBot banner](images/Der_Bergdoktor_banner_with_working_title_and_project_description.jpg)
 
@@ -34,128 +56,177 @@ The setup follows these [instructions](https://sarafian.github.io/low-code/2020/
 8. Let the bot **send** a test message via visiting `https://api.telegram.org/bot<BOT_TOKEN>/sendMessage?chat_id=<GROUP_CHAT_ID>&text=Test` in the browser.
    <br>The message should appear in the group chat.
 
-### Script
+### Quick Start with Docker (Recommended)
 
-1. Insert the bot `Token` into the constant `TELEGRAM_BOT_TOKEN`
-1. Insert the `chat_id` into the constant `TELEGRAM_CHAT_ID`
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier.git
+   cd der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier
+   ```
 
-You do **not** have to be signed in to doctolib.de in order to do do the next steps that will get your search query.
+2. **Copy the environment template**
+   ```bash
+   cp .env.example .env
+   ```
 
-1. Navigate to [doctolib.de](https://www.doctolib.de/)
-2. Use the search mask to find a doctor you want to make an appointment at and hit `search`
-3. Once your on the doctor's landing page open your browsers `dev tools`, select the `Network` tab and leave it open for the next steps
-4. Click on `TERMIN BUCHEN`
-5. Answer the following questions in the appointment wizard until you reach the date overview that says `Wählen Sie das Datum für den Termin`
-6. Copy the **URL of the browser** into the constant `BOOKING_URL`
-6. Select the filter `Fetch/XHR` within the `Network` tab in order to make it easier to find the correct request URL
-7. Look for a request to `availabilities.json…` and click on it in the list of requests
-8. Copy the value of the `Request URL` in the detail view and paste it into the constant `AVAILABILITIES_URL`
+3. **Configure your settings** (see Configuration section below)
+   ```bash
+   nano .env  # or use your preferred editor
+   ```
 
-### Cron
+4. **Start the bot**
+   ```bash
+   docker-compose up -d
+   ```
 
-First of all the script has to be made executable.
+5. **Check the logs**
+   ```bash
+   docker-compose logs -f bergdoktorbot
+   ```
+
+### Configuration
+
+#### For Each Doctor You Want to Monitor:
+
+You do **not** have to be signed in to doctolib.de to get the required URLs.
+
+1. **Navigate to [doctolib.de](https://www.doctolib.de/)**
+2. **Search for your doctor** and go to their profile page
+3. **Open browser dev tools** (`F12`), go to `Network` tab
+4. **Click `TERMIN BUCHEN`** and complete the appointment wizard
+5. **Copy the browser URL** for the booking page
+6. **Filter for `Fetch/XHR`** in the Network tab
+7. **Find the `availabilities.json` request** and copy its full URL
+8. **Add to `.env` file** using the pattern below:
 
 ```bash
-chmod +x /path/to/notifyDoctolibDoctorsAppointment.py
+# Doctor 1
+DOCTOR_1_NAME=Your Doctor Name
+DOCTOR_1_AVAILABILITIES_URL=https://www.doctolib.de/availabilities.json?...
+DOCTOR_1_BOOKING_URL=https://www.doctolib.de/your-doctor/booking/...
+DOCTOR_1_MOVE_BOOKING_URL=  # Optional
+
+# Doctor 2 (add as many as needed)
+DOCTOR_2_NAME=Another Doctor
+DOCTOR_2_AVAILABILITIES_URL=https://www.doctolib.de/availabilities.json?...
+DOCTOR_2_BOOKING_URL=https://www.doctolib.de/another-doctor/booking/...
 ```
 
-Next, schedule the script execution via the cron.
+### Alternative: Manual Installation
 
+If you prefer to run without Docker:
+
+1. **Install Python 3.7+**
+2. **Configure environment variables** in your system or create a `.env` file
+3. **Run manually:**
+   ```bash
+   python notifyDoctolibDoctorsAppointment.py
+   ```
+4. **Or schedule with cron:**
+   ```bash
+   # Run every 5 minutes from 7 AM to 11 PM
+   */5 7-23 * * * cd /path/to/bot && python notifyDoctolibDoctorsAppointment.py
+   ```
+
+## Environment Variables
+
+Configure these in your `.env` file:
+
+### Required Settings
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `TELEGRAM_BOT_TOKEN` | Your Telegram bot token from @BotFather | `123456789:ABC-DEF...` |
+| `TELEGRAM_CHAT_ID` | Your Telegram group chat ID | `-123456789` |
+
+### Doctor Configuration (Multi-Doctor Support)
+
+For each doctor, use the pattern `DOCTOR_X_*` where X is a number (1, 2, 3, etc.):
+
+| Variable Pattern | Description | Required |
+|------------------|-------------|----------|
+| `DOCTOR_X_NAME` | Display name for the doctor | ✅ |
+| `DOCTOR_X_AVAILABILITIES_URL` | Full availabilities.json URL from Network tab | ✅ |
+| `DOCTOR_X_BOOKING_URL` | Booking page URL | ✅ |
+| `DOCTOR_X_MOVE_BOOKING_URL` | Optional: Move existing appointment URL | ❌ |
+
+**Example:**
 ```bash
-crontab -e
+DOCTOR_1_NAME=Dr. Smith - Cardiology
+DOCTOR_1_AVAILABILITIES_URL=https://www.doctolib.de/availabilities.json?visit_motive_ids=123...
+DOCTOR_1_BOOKING_URL=https://www.doctolib.de/dr-smith/booking/...
+
+DOCTOR_2_NAME=Dr. Johnson - Dermatology  
+DOCTOR_2_AVAILABILITIES_URL=https://www.doctolib.de/availabilities.json?visit_motive_ids=456...
+DOCTOR_2_BOOKING_URL=https://www.doctolib.de/dr-johnson/booking/...
 ```
 
-E.g. this cron entry will run it every minute from 7:00 AM to 23:59 PM.
+### Optional Settings
 
-```bash
-* 7-23 * * * python /path/to/notifyDoctolibDoctorsAppointment.py
+| Variable | Description | Default | Type |
+|----------|-------------|---------|------|
+| `UPCOMING_DAYS` | Days to monitor for appointments (max 15) | `15` | `int` |
+| `NOTIFY_HOURLY` | Send hourly notifications for later appointments | `false` | `bool` |
+| `INTERVAL_MINUTES` | Minutes between checks | `5` | `int` |
+| `RUN_MODE` | `cron` for scheduled, `manual` for one-time | `cron` | `str` |
+
+### Legacy Support (Deprecated)
+
+The old single-doctor variables are still supported for backward compatibility:
+- `AVAILABILITIES_URL`, `BOOKING_URL`, `APPOINTMENT_NAME`, `MOVE_BOOKING_URL`
+
+## Example Notification
+
+When appointments are found, you'll receive a combined notification like this:
+
+```
+🏥 Arzttermin-Update
+
+🔥 Verfügbare Termine:
+👨‍⚕️ Dr. Smith - Cardiology
+   🔥 3 Termine in 5 Tagen!
+   📞 Jetzt buchen
+
+👨‍⚕️ Dr. Johnson - Dermatology  
+   🔥 2 Termine in 5 Tagen!
+   📞 Jetzt buchen
+
+💊 Der BergdoktorBot
 ```
 
-## Settings
+## Docker Commands
 
-Adjust those constants to get the most out of your notifications.
+| Command | Description |
+|---------|-------------|
+| `docker-compose up -d` | Start bot in background |
+| `docker-compose logs -f bergdoktorbot` | View live logs |
+| `docker-compose down` | Stop the bot |
+| `docker-compose restart` | Restart the bot |
+| `docker-compose run --rm -e RUN_MODE=manual bergdoktorbot` | Test run |
 
-### TELEGRAM_BOT_TOKEN
+## Troubleshooting
 
-Paste your Telegram bot `Token` in this constant.
+- **No doctors configured**: Check your `DOCTOR_X_*` variables in `.env`
+- **API errors**: Verify your `availabilities.json` URLs are current
+- **No notifications**: Check Telegram token and chat ID
+- **Container issues**: Run `docker-compose logs bergdoktorbot` for details
 
-⚠️ The script will abort if you don't provide this data.
+## Contributing
 
-Type `str`.
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-Default `''`.
+## License
 
-### TELEGRAM_CHAT_ID
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-Paste your Telegram `chat_id` in this constant.
+## Changelog
 
-⚠️ The script will abort if you don't provide this data.
+See [CHANGELOG.md](CHANGELOG.md) for version history and changes.
 
-Type `str`.
+## Disclaimer
 
-Default `''`.
+This tool is for educational purposes and personal use only. Please respect Doctolib's terms of service and don't overload their servers. The authors are not responsible for any misuse of this tool.
 
-### BOOKING_URL
+---
 
-Paste your doctolib booking URL in this constant. The Telegram message will contain a link to this page in case of available appointments.
-
-Type `str`.
-
-Default `https://www.doctolib.de/`.
-
-### AVAILABILITIES_URL
-
-Paste the complete URL to the Doctolib `availabilities.json` (including parameters) in this constant.
-
-⚠️ The script will abort if you don't provide this data.
-
-Type `str`.
-
-Default `''`.
-
-### APPOINTMENT_NAME
-
-If you have multiple instances of the script running and share the same Telegram channel it's a good idea to make notifications allocatable.
-
-Type `str|None`.
-
-Default `None`.
-
-### MOVE_BOOKING_URL
-
-Provide a link to your `Termin verschieben` page behind your login to navigate fastest to the booking page and move the appointment in one go. When set, an extra link will be sent in addition to the `BOOKING_URL` link.
-
-Type `str|None`.
-
-Default `None`.
-
-### UPCOMING_DAYS
-
-Paste the number of days from today, that you want to monitor appointments for, in this constant.
-
-ℹ️ Doctolib has a limit of 15 days.
-
-Type `int`.
-
-Default `15`.
-
-### MAX_DATETIME_IN_FUTURE
-
-If you already have an appointment within the next `UPCOMING_DAYS` you can set this date in this constant so that the script only notifies for **earlier dates**.
-
-E.g.
-```python
-MAX_DATETIME_IN_FUTURE = datetime(2023, 6, 16, 12, 0, 0)
-```
-
-Type `datetime`.
-
-Default `15 days in the future`.
-
-### NOTIFY_HOURLY
-
-Whether to notify late appointments (outside of the `UPCOMING_DAYS` range) hourly.
-
-Type `bool`.
-
-Default `False`.
+**Repository Topics**: `doctolib`, `telegram-bot`, `appointment-notifier`, `docker`, `python`, `healthcare`, `automation`, `multi-doctor`, `germany`

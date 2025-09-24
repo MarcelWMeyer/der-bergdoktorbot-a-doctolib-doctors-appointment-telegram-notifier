@@ -1,0 +1,8 @@
+services:
+  bergdoktorbot:
+    build: .
+    container_name: bergdoktorbot
+    env_file:
+      - .env
+    
+    restart: unless-stopped
