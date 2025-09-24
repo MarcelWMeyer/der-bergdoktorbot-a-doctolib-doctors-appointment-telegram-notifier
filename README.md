@@ -5,8 +5,6 @@
 [![License](https://img.shields.io/github/license/MarcelWMeyer/der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier)](LICENSE.md)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 
-![Der BergdoktorBot banner](images/Der_Bergdoktor_banner_with_working_title_and_project_description.jpg)er BergdoktorBot FORK – A Multi-Doctor Doctolib Appointment Telegram Notifier
-
 ![Der BergdoktorBot banner](images/Der_Bergdoktor_banner_with_working_title_and_project_description.jpg)
 
 Get Telegram notifications about doctor's appointments from **multiple doctors simultaneously** on [doctolib.de](https://www.doctolib.de/). This Docker-based bot monitors multiple doctors and sends **combined notifications** when appointments become available.
@@ -20,17 +18,11 @@ Get Telegram notifications about doctor's appointments from **multiple doctors s
 - 🔄 **Reliable Scheduling**: Loop-based execution (no cron issues)
 - 🔒 **Privacy Focused**: No login required, works with public availability data
 
-ℹ️ 🔒 🔧 Remember that this script does not know anything about your doctolib details behind your login so you have to **monitor** and **adjust** it on the go to reduce unwanted notifications.ergdoktorBot – A Doctolib doctor's appointment Telegram notifier
-
-![Der BergdoktorBot banner](images/Der_Bergdoktor_banner_with_working_title_and_project_description.jpg)
-
-Get Telegram notifications about the most recent doctor's appointments on [doctolib.de](https://www.doctolib.de/). This script will notify you **every minute** as long as appointments exist within the next `UPCOMING_DAYS`. The next appointment outside of that threshold is additionally notified **on the hour**.
-
-ℹ️ 🔒 🔧 Remember that this static script does not know anything about your doctolib details behind your login so you have to **monitor** and **adjust** it on the go to reduce unwanted notifications.
+ℹ️ 🔒 🔧 Remember that this script does not know anything about your doctolib details behind your login so you have to **monitor** and **adjust** it on the go to reduce unwanted notifications.
 
 ## Setup
 
-### Telegram
+### Telegram Bot Setup
 
 The setup follows these [instructions](https://sarafian.github.io/low-code/2020/03/24/create-private-telegram-chatbot.html). For simplicity I tried to compress it even more in the following step by step list:
 
@@ -41,11 +33,13 @@ The setup follows these [instructions](https://sarafian.github.io/low-code/2020/
    
    The bot `Token` will be available once the bot is created.
    <br>Write it down, you'll need it in a later step.
-2. **Create** a **private** group. Overyone in the group will see the messages from your bot.
+
+2. **Create** a **private** group. Everyone in the group will see the messages from your bot.
    - Group name: `MyPrivateGroup`
    - Group Type: `private`
    
    Warning: **Do not** edit special permissions for users as this will [convert the group into a supergroup](https://stackoverflow.com/a/62291433) which **does not work** with this code.
+
 3. Temporarily **enable** `Allow Groups?` on the bot.
 4. **Add** the bot to the group.
 5. Immediately **deactivate** `Allow Groups?` on the bot after adding it to the group.
@@ -60,7 +54,7 @@ The setup follows these [instructions](https://sarafian.github.io/low-code/2020/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier.git
+   git clone https://github.com/MarcelWMeyer/der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier.git
    cd der-bergdoktorbot-a-doctolib-doctors-appointment-telegram-notifier
    ```
 
